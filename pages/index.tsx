@@ -26,20 +26,3 @@ export default  function Home() {
   )
 }
 
-
-// const Home = () => {
-//   return (
-//     <div className={styles.container}>
-//       <Head>
-//         <title>Next Auth</title>
-//       </Head>
-
-//       <main className={styles.main}>
-//        Hello World!
-//       </main>
-
-//     </div>
-//   )
-// }
-
-
