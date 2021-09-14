@@ -4,7 +4,7 @@ import { parseCookies } from "nookies"
 export function withSSRGuest<P>(fn: GetServerSideProps<P>) {
     return async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
         const cookies = parseCookies(context)
-        if (!cookies['nextauth.token']) {
+        if (cookies['nextauth.token']) {
             return {
                 redirect: {
                     destination: '/dashboard',
