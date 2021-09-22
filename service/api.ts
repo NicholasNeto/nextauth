@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { parseCookies, setCookie } from 'nookies'
 import { signOut } from '../contexts/AuthContext';
+import { AuthTokenErros } from './errors/AuthTokenErros';
 
 {/*
     Aqui é uma funcionalidade para interceptar uma chamada, então imagina que 
@@ -88,6 +89,8 @@ export function setupAPIClient(ctx = undefined) {
                 // desligar o usuario 
                 if (process.browser) {
                     signOut()
+                } else {
+                    Promise.reject(new AuthTokenErros())
                 }
                 // if (error.response?.status === 401) {}
             }
