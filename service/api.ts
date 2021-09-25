@@ -90,7 +90,7 @@ export function setupAPIClient(ctx = undefined) {
                 if (process.browser) {
                     signOut()
                 } else {
-                    Promise.reject(new AuthTokenErros())
+                    return Promise.reject(new AuthTokenErros())
                 }
                 // if (error.response?.status === 401) {}
             }
