@@ -24,6 +24,6 @@ export const getServerSideProps = withSSRAuth(async (ctx) => {
         props: {}
     }
 }, {
-    permissions: ['metrics.teste'],
+    permissions: ['metrics.list'],
     roles: ['administrator']
 })

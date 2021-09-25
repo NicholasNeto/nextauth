@@ -15,10 +15,10 @@ type User = {
 }
 
 type AuthContextData = {
-    signIn(credentials: SignInCredentials): Promise<void>;
-    signOut: () =>  Promise<void>
-    user: User;
+    signIn: (credentials: SignInCredentials) => Promise<void>;
+    signOut: () => void
     isAuthenticated: boolean;
+    user: User;
 }
 
 type AuthProviderProps = {
@@ -28,17 +28,41 @@ type AuthProviderProps = {
 export function signOut() {
     destroyCookie(undefined, 'nextauth.token');
     destroyCookie(undefined, 'nextauth.refreshToken');
+    authChanel.postMessage('signOut');
+
     Router.push('/');
 }
 
 
 export const AuthContext = createContext({} as AuthContextData)
+let authChanel: BroadcastChannel
 
 export function AuthProvider({ children }: AuthProviderProps) {
 
     const [user, setUser] = useState<User>();
     const isAuthenticated = !!user;
 
+
+    useEffect(() => {
+        authChanel = new BroadcastChannel('auth')
+
+        authChanel.onmessage = (messege) => {
+
+            switch (messege.data) {
+                case 'signOut':
+                    signOut();
+                    authChanel.close();
+                    break;
+                // case 'signIn':
+                //     Router.push('/dashboard')
+                //     break;
+                default:
+                    break;
+            }
+
+            console.log(messege)
+        }
+    }, [])
 
     useEffect(() => {
         const { 'nextauth.token': token } = parseCookies()
@@ -80,6 +104,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 email
             })
 
+            // authChanel.postMessage('signIn') não esta funcionando 
             api.defaults.headers['Authorization'] = `Bearer ${token}`
             Router.push('/dashboard')
             console.log('---> ', response.data)
@@ -90,7 +115,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     return (
-        <AuthContext.Provider value={{ signIn, isAuthenticated, user }}>
+        <AuthContext.Provider value={{ signIn, signOut, isAuthenticated, user }}>
             {children}
         </AuthContext.Provider>
     )
